@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+
+<h1>Welcome to Dashboard</h1>
+
+<button onclick="logout()">Logout</button>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Course</th>
+            <th>Plan</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody id="memberList">
+        <!-- Data will come here -->
+    </tbody>
+</table>
+
+<p>Total Members: <span id="count">0</span></p>
+
+<script>
+//  PROTECT DASHBOARD
+const user = localStorage.getItem("user");
+
+if (!user) {
+    window.location.href = "login.html";
+}
+
+//  LOGOUT
+function logout() {
+    localStorage.removeItem("user");
+    window.location.href = "login.html";
+}
+
+//  LOAD MEMBERS
+function loadMembers() {
+    fetch("http://localhost:5000/api/members")
+        .then(res => res.json())
+        .then(data => {
+
+            const list = document.getElementById("memberList");
+            const count = document.getElementById("count");
+
+            list.innerHTML = "";
+
+            if (data.length === 0) {
+                list.innerHTML = "<tr><td colspan='3'>No members</td></tr>";
+                count.textContent = 0;
+                return;
+            }
+
+            count.textContent = data.length;
+
+            data.forEach(member => {
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${member.name}</td>
+                    <td>${member.plan}</td>
+                    <td>
+                        <button onclick="deleteMember(${member.id})">Delete</button>
+                    </td>
+                `;
+
+                list.appendChild(row);
+            });
+        })
+        .catch(err => console.log(err));
+}
+
+//  DELETE
+function deleteMember(id) {
+    fetch(`http://localhost:5000/api/members/${id}`, {
+        method: "DELETE"
+    })
+    .then(() => loadMembers());
+}
+
+// AUTO LOAD
+window.onload = loadMembers;
+</script>
+
+</body>
+</html>
