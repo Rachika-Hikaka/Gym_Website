@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Pro Fitness - Login</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    
+    <body class="auth-page">
+        <main class="auth-shell">
+            <section class="auth-brand">
+                <a class="logo">
+                    <img src="Gym_Logo.png" alt="Pro Fitness Logo" class="gym-logo">
+                    <span class="logo-text">PRO FITNESS</span>
+                </a>
+                
+                <h1>Welcome back,</h1>
+                <p>Continue your fitness journey with us.</p>
+            </section>
+            
+            <section class="auth-card">
+                <h2>Login</h2>
+                <form id="loginForm" class="panel-form">
+                    <input id="email" type="email" placeholder="Email" value="admin@gmail.com" required />
+                    <div class="password-field">
+                        <input id="password" type="password" placeholder="Password" value="admin123" required />
+                        <button class="password-toggle" type="button" data-password-toggle="password" aria-label="Show password">
+                            <img src="Eye.png" alt="" aria-hidden="true">
+                        </button>
+                    </div>
+                    <button class="primary-btn" type="submit">Login</button>
+                    <div class="demo-hints" aria-label="Demo login hints">
+                        <p class="hint demo-note">Demo roles use these Gmail accounts. Real users should register with their own @gmail.com address.</p>
+                        <p class="hint"><strong>Admin</strong><span>admin@gmail.com / admin123</span></p>
+                        <p class="hint"><strong>Trainer</strong><span>trainer@gmail.com / trainer123</span></p>
+                        <p class="hint"><strong>User</strong><span>user@gmail.com / user123</span></p>
+                    </div>
+                    <p id="loginStatus" class="status-text"></p>
+                </form>
+                
+                <p class="auth-switch">No account? <a href="register.html">Create one</a></p>
+            </section>
+        </main>
+        
+        <script src="auth.js"></script>
+    </body>
+</html>

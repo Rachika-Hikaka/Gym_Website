@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pro Fitness - Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  </head>
+  
+  <body class="dashboard-page">
+    <aside class="sidebar" id="sidebar">      <!-- SIDEBAR SECTION -->
+      <a class="logo">
+        <img src="Gym_Logo.png" alt="Pro Fitness Logo" class="gym-logo">
+        <span class="logo-text">PRO FITNESS</span>
+      </a>
+      
+      <nav id="dashboardNav"></nav>
+      <!-- LOGOUT BUTTON -->
+      <button class="logout-btn" id="logoutBtn" type="button">Logout</button>
+    </aside>
+    
+    <main class="dashboard-main">
+      <header class="dashboard-top">
+        
+        <!-- MOBILE MENU BUTTON -->
+        <button class="menu-toggle dark" id="dashboardMenu" type="button" aria-label="Open dashboard menu" aria-expanded="false">≡</button>
+        <div>
+          <p class="dashboard-wel" id="dashboardWel">Dashboard</p>
+          <h1 id="welcomeTitle">Welcome</h1>
+        </div>
+      </header>
+      
+      <!-- DASHBOARD CONTENT WILL LOAD HERE -->
+      <section id="dashboardContent" class="dashboard-content"></section>
+    </main>
+    
+    <script src="dashboard.js"></script>
+  </body>
+</html>
