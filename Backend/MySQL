@@ -1,0 +1,126 @@
+CREATE DATABASE PRO_FITNESS_GYM;
+USE PRO_FITNESS_GYM;
+
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(120) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  role ENUM('admin', 'trainer', 'user') DEFAULT 'user',
+  plan VARCHAR(30) DEFAULT 'Monthly',
+  trainer_id INT NULL,
+  expiry_date DATE NULL,
+  status VARCHAR(30) DEFAULT 'Active',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE membership_plans (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  code VARCHAR(50) NOT NULL UNIQUE,
+  price INT NOT NULL,
+  duration_days INT NOT NULL,
+  featured BOOLEAN DEFAULT FALSE,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE member_routines (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  trainer_id INT NOT NULL,
+  title VARCHAR(100) NOT NULL,
+  details TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (trainer_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE member_diets (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  trainer_id INT NOT NULL,
+  meal VARCHAR(100) NOT NULL,
+  details TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (trainer_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE progress_entries (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  trainer_id INT NOT NULL,
+  weight DECIMAL(5,2) NOT NULL,
+  note VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (trainer_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE payments (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  amount INT NOT NULL,
+  method VARCHAR(50) NOT NULL,
+  reference VARCHAR(120) NOT NULL,
+  status VARCHAR(30) DEFAULT 'Paid',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE contacts (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(120) NOT NULL,
+  message TEXT NOT NULL,
+  reply TEXT NULL,
+  status VARCHAR(30) DEFAULT 'Unread',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE reviews (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  rating INT NOT NULL,
+  feedback TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+INSERT INTO membership_plans (name, code, price, duration_days, featured) VALUES
+('Monthly Plan', 'Monthly', 700, 30, FALSE),
+('3 Months Plan', '3Months', 2500, 90, TRUE),
+('6 Months Plan', '6Months', 4000, 180, FALSE),
+('Yearly Plan', '1Year', 7000, 365, FALSE);
+
+INSERT INTO users (name, email, password, role, plan, expiry_date, status) VALUES
+('Gym Admin', 'admin@gmail.com', 'admin123', 'admin', 'Admin', NULL, 'Active'),
+('Head Trainer', 'trainer@gmail.com', 'trainer123', 'trainer', 'Staff', NULL, 'Active'),
+('Demo Member', 'user@gmail.com', 'user123', 'user', 'Monthly', DATE_ADD(CURDATE(), INTERVAL 30 DAY), 'Active');
+
+UPDATE users AS member
+JOIN users AS trainer ON trainer.email = 'trainer@gmail.com'
+SET member.trainer_id = trainer.id
+WHERE member.email = 'user@gmail.com';
+
+INSERT INTO payments (user_id, amount, method, reference, status)
+SELECT id, 700, 'Cash', 'DEMO-PAID', 'Paid'
+FROM users
+WHERE email = 'user@gmail.com';
+
+INSERT INTO progress_entries (user_id, trainer_id, weight, note)
+SELECT member.id, trainer.id, 82.00, 'Starting weight'
+FROM users AS member
+JOIN users AS trainer ON trainer.email = 'trainer@gmail.com'
+WHERE member.email = 'user@gmail.com';
+
+INSERT INTO progress_entries (user_id, trainer_id, weight, note)
+SELECT member.id, trainer.id, 79.90, 'Consistent training'
+FROM users AS member
+JOIN users AS trainer ON trainer.email = 'trainer@gmail.com'
+WHERE member.email = 'user@gmail.com';
+
+INSERT INTO reviews (user_id, rating, feedback)
+SELECT id, 5, 'Trainer support and progress tracking made the gym feel personal.'
+FROM users
+WHERE email = 'user@gmail.com';
